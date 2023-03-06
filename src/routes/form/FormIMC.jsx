@@ -1,14 +1,33 @@
 import { useRef } from "react"
+import { useDispatch } from "react-redux";
+import {addBodyDatas} from "./FormSlice";
+import { useNavigate } from "react-router-dom";
 
 const FormIMC = () => {
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const heightRef = useRef();
     const weightRef = useRef();
 
-    const submitFormHandler = async (e) => {
+    const submitFormHandler = (e) => {
         e.preventdefault();
+
         const height = heightRef.current.value;
         const weight = weightRef.current.value;
+
+        const bodyDataValues = {
+            height,
+            weight
+        };
+
+        dispatch(addBodyDatas(bodyDataValues));
+
+        console.log("ça marche")
+
+        navigate(`/displayimc`)
+
     }
     
     return (

@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import ErrorPage from "./routes/ErrorPage";
 import HomePage from "./routes/HomePage";
-import FormIMC from "./routes/FormIMC";
+import FormIMC from "./routes/form/FormIMC";
 import DisplayIMC from "./routes/DisplayIMC";
 
 

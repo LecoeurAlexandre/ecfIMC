@@ -1,8 +1,91 @@
-import { Link, NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet } from 'react-router-dom';
+import ModalComponent from './components/shared/ModalComponent';
+import { createPortal } from "react-dom";
+import { useRef, useState } from "react";
+import { API_KEY } from './apiKey';
+import { loggin } from './components/userSlice';
 
 function App() {
+  const [modalVisible, setModalVisible] = useState(false); // ouverture / fermeture modal
+  const [modalConnect, setModalConnect] = useState() // différencier inscription / connexion
+
+  const emailRef = useRef();
+  const passwordRef = useRef();
+
+  const connectHandler = (mode)=> {
+    setModalVisible(true)
+    setModalConnect(mode)
+  }
+
+
+  const submitUserFormHandler = async (e) => {
+    e.preventDefault()
+
+    console.log(modalConnect)
+
+    let BASE_URL = ""
+    if (modalConnect === "signUp") {
+      BASE_URL = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${API_KEY}`
+    } else {
+      BASE_URL = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${API_KEY}`
+    }
+
+    try {
+      const response = await fetch(BASE_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body : JSON.stringify({
+          email: emailRef.current.value,
+          password: passwordRef.current.value,
+          returnSecureToken: true
+        })
+      })
+
+      // Si la réponse n'a pas comme code de retour un OK (200), alors on va envoyer une erreur
+      if(!response.ok) {
+        throw new Error("Il y a eu une erreur !")
+      }
+
+      // Si la réponse est concluante, on extrait le body
+      const data = await response.json()
+
+      localStorage.setItem('token', data.idToken)
+
+      emailRef.current.value = ""
+      passwordRef.current.value = ""
+
+      loggin(true)
+      setModalVisible(false)
+
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
+
   return (
     <>
+    {modalVisible && createPortal(<ModalComponent closeModal={() => setModalVisible(false)}>
+        <div className="d-flex justify-content-between align-items center">
+        <h3>{modalConnect === "signUp" ? "S'inscrire" : "Se connecter"}</h3>
+        <button onClick={() =>setModalVisible(false)} className="btn btn-outline-dark rounded-circle"><i className="bi bi-x"></i></button>
+        </div>
+        <hr />
+        <form onSubmit={submitUserFormHandler}>
+          <div className="mb-3">
+            <label htmlFor="email" className="form-label">Email : </label>
+            <input type="text" required ref={emailRef} className="form-control" />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="password" className="form-label">Mot de passe : </label>
+            <input type="password" required ref={passwordRef} className="form-control" />
+          </div>
+          <div className="text-end">
+            <button type="submit" className="btn btn-outline-info me-2">{modalConnect === "signUp" ? "S'inscrire" : "Se connecter"}</button>
+          </div>
+        </form>
+    </ModalComponent>, document.getElementById("modal-root"))}
     <header>
       <nav className="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
           <div className="container-fluid">
@@ -24,8 +107,8 @@ function App() {
                 </ul>
             </div>
             <div className="collapse navbar-collapse" id="eRecipe-navbar">
-              <button className="ms-auto btn btn-outline-info">Register</button>
-              <button className="ms-2 btn btn-primary">Sign In</button>
+              <button className="ms-auto btn btn-outline-info" onClick={()=> connectHandler("signUp")}>S'inscrire</button>
+              <button className="ms-2 btn btn-primary" onClick={()=> connectHandler("signIn")}>Se connecter</button>
             </div>
           </div>
       </nav>
