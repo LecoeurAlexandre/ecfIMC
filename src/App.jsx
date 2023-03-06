@@ -3,11 +3,16 @@ import ModalComponent from './components/shared/ModalComponent';
 import { createPortal } from "react-dom";
 import { useRef, useState } from "react";
 import { API_KEY } from './apiKey';
-import { loggin } from './components/userSlice';
+import { setIsLogged } from './components/userSlice';
+import { useSelector, useDispatch } from "react-redux";
 
 function App() {
   const [modalVisible, setModalVisible] = useState(false); // ouverture / fermeture modal
   const [modalConnect, setModalConnect] = useState() // différencier inscription / connexion
+
+  const dispatch = useDispatch()
+
+  const isLogged = useSelector(state => state.user.isLogged)
 
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -56,12 +61,18 @@ function App() {
       emailRef.current.value = ""
       passwordRef.current.value = ""
 
-      loggin(true)
+      dispatch(setIsLogged(true));
       setModalVisible(false)
+      console.log(isLogged)
 
     } catch (error) {
       console.error(error.message);
     }
+  }
+
+  const logOutHandler = () => {
+    localStorage.removeItem('token')
+    dispatch(setIsLogged(false));
   }
 
   return (
@@ -107,8 +118,8 @@ function App() {
                 </ul>
             </div>
             <div className="collapse navbar-collapse" id="eRecipe-navbar">
-              <button className="ms-auto btn btn-outline-info" onClick={()=> connectHandler("signUp")}>S'inscrire</button>
-              <button className="ms-2 btn btn-primary" onClick={()=> connectHandler("signIn")}>Se connecter</button>
+              {isLogged ? <button className="ms-auto btn btn-danger" onClick={()=> logOutHandler()}>Se déconnecter</button> : <><button className="ms-auto btn btn-outline-info" onClick={()=> connectHandler("signUp")}>S'inscrire</button>
+              <button className="ms-2 btn btn-primary" onClick={()=> connectHandler("signIn")}>Se connecter</button></>}
             </div>
           </div>
       </nav>

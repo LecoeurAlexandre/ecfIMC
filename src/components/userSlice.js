@@ -6,11 +6,11 @@ const userSlice = createSlice({
         isLogged: false
     },
     reducers: {
-        loggin(state, action){
-            state.isLogged(action.payload)
+        setIsLogged(state, action){
+            state.isLogged=action.payload
         }
     }
 })
 
-export const { loggin } = userSlice.actions;
+export const { setIsLogged } = userSlice.actions;
 export default userSlice.reducer;
