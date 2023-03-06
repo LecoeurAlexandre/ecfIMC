@@ -1,6 +1,6 @@
 import { useRef } from "react"
 import { useDispatch, useSelector } from "react-redux";
-import {addBodyDatas} from "./FormSlice";
+import { addBodyDatas } from "./FormSlice";
 import { useNavigate } from "react-router-dom";
 
 const FormIMC = () => {
@@ -10,19 +10,23 @@ const FormIMC = () => {
 
     const heightRef = useRef();
     const weightRef = useRef();
+    const dateRef = useRef();
 
     const submitFormHandler = (e) => {
         e.preventDefault();
 
         const height = +heightRef.current.value;
         const weight = +weightRef.current.value;
+        const date = dateRef.current.value;
 
         heightRef.current.value ="";
         weightRef.current.value ="";
+        dateRef.current.value = "";
 
         const bodyDataValues = {
             height,
-            weight
+            weight,
+            date
         };
         console.log(bodyDataValues)
 
@@ -32,8 +36,8 @@ const FormIMC = () => {
 
     }
 
-    const data = useSelector(state => state.form.bodyDatas)
-    console.log(data)
+    //const data = useSelector(state => state.form.bodyDatas)
+    //console.log(data)
     
     return (
         <>
@@ -43,11 +47,15 @@ const FormIMC = () => {
             <form onSubmit={submitFormHandler}>
                 <div className="form-group mb-3">
                     <label className="form-label" htmlFor="height">Veuillez renseigner votre taille (en cm) :</label>
-                    <input type="number" min={0} max={300} className="form-control" id="height" ref={heightRef} placeholder="174"/>
+                    <input type="number" min={0} max={300} className="form-control" id="height" ref={heightRef} required placeholder="174"/>
                 </div>
                 <div className="form-group mb-3">
                     <label className="form-label" htmlFor="weight">Veuillez renseigner votre poids (en kg) :</label>
-                    <input type="number" min={0} max={300} className="form-control" id="weight" ref={weightRef} placeholder="60"/>
+                    <input type="number" min={0} max={300} className="form-control" id="weight" ref={weightRef} required placeholder="60"/>
+                </div>
+                <div className="mb-3">
+                    <label className="form-label" htmlFor="date">Date de la prise de poids : </label>
+                    <input type="date" id="date" required ref={dateRef} className="form-control" />
                 </div>
                 <div className="d-flex mb-3">
                     <button className="btn btn-primary ms-auto">Envoyer mes données</button>
