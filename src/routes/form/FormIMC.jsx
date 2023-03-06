@@ -1,5 +1,5 @@
 import { useRef } from "react"
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {addBodyDatas} from "./FormSlice";
 import { useNavigate } from "react-router-dom";
 
@@ -12,23 +12,28 @@ const FormIMC = () => {
     const weightRef = useRef();
 
     const submitFormHandler = (e) => {
-        e.preventdefault();
+        e.preventDefault();
 
-        const height = heightRef.current.value;
-        const weight = weightRef.current.value;
+        const height = +heightRef.current.value;
+        const weight = +weightRef.current.value;
+
+        heightRef.current.value ="";
+        weightRef.current.value ="";
 
         const bodyDataValues = {
             height,
             weight
         };
+        console.log(bodyDataValues)
 
         dispatch(addBodyDatas(bodyDataValues));
-
-        console.log("ça marche")
 
         navigate(`/displayimc`)
 
     }
+
+    const data = useSelector(state => state.form.bodyDatas)
+    console.log(data)
     
     return (
         <>
@@ -38,11 +43,11 @@ const FormIMC = () => {
             <form onSubmit={submitFormHandler}>
                 <div className="form-group mb-3">
                     <label className="form-label" htmlFor="height">Veuillez renseigner votre taille (en cm) :</label>
-                    <input type="number" className="form-control" id="height" placeholder="174"/>
+                    <input type="number" min={0} max={300} className="form-control" id="height" ref={heightRef} placeholder="174"/>
                 </div>
                 <div className="form-group mb-3">
                     <label className="form-label" htmlFor="weight">Veuillez renseigner votre poids (en kg) :</label>
-                    <input type="number" className="form-control" id="weight" placeholder="60"/>
+                    <input type="number" min={0} max={300} className="form-control" id="weight" ref={weightRef} placeholder="60"/>
                 </div>
                 <div className="d-flex mb-3">
                     <button className="btn btn-primary ms-auto">Envoyer mes données</button>

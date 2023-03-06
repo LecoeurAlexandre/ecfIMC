@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter} from "react-router-dom";
 import App from "./App";
 import ErrorPage from "./routes/ErrorPage";
 import HomePage from "./routes/HomePage";
@@ -18,11 +18,11 @@ const router = createBrowserRouter([
             },
             {
                 path: "/form",
-                element: <FormIMC />
+                element: <FormIMC />,
             },
             {
                 path: "/displayimc",
-                element: <DisplayIMC />
+                element: <DisplayIMC />,
             }
         ]
     }

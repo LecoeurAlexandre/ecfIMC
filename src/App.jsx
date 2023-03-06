@@ -26,7 +26,7 @@ function App() {
   const submitUserFormHandler = async (e) => {
     e.preventDefault()
 
-    console.log(modalConnect)
+    //console.log(modalConnect)
 
     let BASE_URL = ""
     if (modalConnect === "signUp") {
@@ -109,12 +109,16 @@ function App() {
                   <li className="nav-item">
                     <NavLink className="nav-link" to={`/`}>Accueil</NavLink>
                   </li>
+                  {isLogged && <>
                   <li className="nav-item">
                     <NavLink className="nav-link" to={`/displayimc`}>Voir mon IMC</NavLink>
                   </li>
                   <li className="nav-item">
                     <NavLink className="nav-link" to={`/form`}>Entrer mes données</NavLink>
                   </li>
+                  </>
+                  }
+                  
                 </ul>
             </div>
             <div className="collapse navbar-collapse" id="eRecipe-navbar">
